@@ -32,13 +32,20 @@ body {
 /* Video Container for all views */
 .video-container {
     position: relative;
-    width: 100vw; /* Full viewport width */
-    height: 100vh; /* Full viewport height */
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transform-origin: center;
+    transform: scale(var(--video-scale, 1));
 }
 
 video {
-    width: 100%; /* Maintain aspect ratio */
+    width: 100%;
     height: 100%;
+    object-fit: cover;
 }
 
 #video-player {
@@ -114,53 +121,65 @@ video {
 }
 
 /* Position LCD Screens */
-.lcd-screen-left {
+.lcd-screen-left, .lcd-screen-right {
     overflow-y: auto;
     position: absolute;
-    width: 30%;
-    height: 25%;
     background-color: rgba(0, 0, 0, 0.2);
     color: #96f7e5;
-    font-size: 16px;
+    font-size: clamp(14px, 1.5vw, 18px);
     font-family: Comic Sans MS;
     display: flex;
-    flex-direction: column; /* Arrange items vertically */
-    box-sizing: border-box; /* Ensure padding doesn't overflow */
-    justify-content: flex-start; /* Align items at the top */
-    align-items: center; /* Center align horizontally */
+    flex-direction: column;
+    box-sizing: border-box;
+    justify-content: flex-start;
+    align-items: center;
     border: 2px solid #9afef7;
     text-align: center;
     box-shadow: 0 0 15px rgb(151, 254, 228);
-    z-index: 20; /* Ensure above other elements */
+    z-index: 20;
     opacity: 0;
     visibility: hidden;
-    margin-right: 15%; /* Add some space to the right */
-    transition: opacity 1s ease-in, visibility 0s linear 0.5s;
+    transition: all 0.3s ease;
+    padding: 10px;
+}
 
+.lcd-screen-left {
+    width: 27.5%;
+    height: 27.8%;
+}
+
+.lcd-screen-right {
+    width: 27.3%;
+    height: 27.5%;
 }
 
 #lcd-screen-left {
-    top: 14%;
-    left: 14%;
-}
-#lcd-screen-right {
-    top: 14%;
-    right: 14%;
+    top: 9.3%;
+    left: 14.75%;
 }
 
+#lcd-screen-right {
+    top: 9.3%;
+    right: 14.5%;
+}
 
 /* Style individual album items */
 .album-item {
+    width: 95%;
     padding: 10px;
-    border: 1px solid rgba(150, 247, 229, 0.3); /* Light border for separation */
+    margin: 8px 0;
+    border: 1px solid rgba(150, 247, 229, 0.3);
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
     background-color: rgba(0, 0, 0, 0.2);
     color: #96f7e5;
     font-family: Comic Sans MS;
-    font-size: 14px;
+    font-size: 16px;
     transition: background-color 0.3s ease;
+    white-space: normal;
+    overflow: visible;
+    line-height: 1.4;
 }
 
 .album-item:hover {
@@ -336,60 +355,62 @@ video {
 }
 
 
-/* Right LCD Table */
-/* General LCD Screen Styling */
-.lcd-screen-right {
-    overflow-y: auto; /* Enable scrolling */
-    position: absolute;
-    width: 30%;
-    height: 25%;
-    background-color: rgba(0, 0, 0, 0.2);
-    color: #96f7e5;
-    font-size: 16px;
-    font-family: Comic Sans MS;
-    display: flex;
-    flex-direction: column; /* Adjust to allow header and content to stack properly */
-    justify-content: flex-start; /* Align header at the top */
-    align-items: center;
-    border: 2px solid #9afef7;
-    text-align: center;
-    box-shadow: 0 0 15px rgb(151, 254, 228);
-    z-index: 20;
-    opacity: 0;
-    visibility: hidden;
-    margin-left: 15%;
-}
-
 /* Right LCD Table Styling */
 .lcd-screen-right table {
-    width: 100%;
+    width: 95%;
     border-collapse: collapse;
     color: #96f7e5;
     font-family: Comic Sans MS;
-    margin: 10px 0; /* Add spacing between header and content */
-    font-size: 12px;
+    margin: 10px auto;
+    font-size: 14px;
+    table-layout: fixed;
+}
+
+/* Column width adjustments */
+.lcd-screen-right table th:first-child,
+.lcd-screen-right table td:first-child {
+    width: 25%;  /* Smaller width for the # column */
+}
+
+.lcd-screen-right table th:last-child,
+.lcd-screen-right table td:last-child {
+    width: 75%;  /* Wider width for the Track Name column */
 }
 
 .lcd-screen-right th, .lcd-screen-right td {
     border: 1px solid #9afef7;
-    padding: 8px;
-    text-align: center;
-    font-size: 12px;
+    padding: 10px 8px;
+    text-align: left;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .lcd-screen-right th {
     background-color: rgba(150, 247, 229, 0.2);
     font-weight: bold;
+    text-align: center;
+    padding: 12px 8px;
 }
 
-/* Ensure images align properly */
+.lcd-screen-right tr {
+    transition: background-color 0.2s ease;
+}
+
+.lcd-screen-right tr:hover {
+    background-color: rgba(150, 247, 229, 0.1);
+    cursor: pointer;
+}
+
 .lcd-screen-right img {
     display: inline-block;
     margin: 0 5px;
     vertical-align: middle;
     border-radius: 50%;
+    width: 20px;
+    height: 20px;
 }
-
 
 .right-lcd-buttons {
     position: absolute;
@@ -505,6 +526,18 @@ video {
     }
     100% {
         box-shadow: 0 0 10px rgba(236, 11, 252, 0.2), 0 0 20px rgba(236, 11, 252, 0.4), 0 0 30px rgba(236, 11, 252, 0.6);
+    }
+}
+
+/* Remove responsive adjustments for LCD screens */
+@media (max-width: 1200px) {
+    /* Other responsive styles can stay */
+}
+
+@media (max-width: 768px) {
+    /* Keep only the font size adjustment */
+    .lcd-screen-left, .lcd-screen-right {
+        font-size: clamp(12px, 1.2vw, 16px);
     }
 }
 
