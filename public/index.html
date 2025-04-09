@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web3 JukeBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/about-modal.css">
     <link rel="stylesheet" href="./styles/token-selection-modal.css">
@@ -44,20 +47,31 @@
 
     <!-- Landing Page -->
     <div id="landing" class="video-container">
-        <video autoplay muted loop id="landing-video">
-            <source src="./assets/landing.mp4" type="video/mp4">
-        </video>
+        <div class="title-container">
+            <h1 class="main-title">ECLIPSE</h1>
+            <div class="sub-header-container">
+                <span class="sub-header-prefix">Powered by</span>
+                <a href="https://github.com/TheJollyLaMa/JollyJukeBox" target="_blank" class="sub-header-link">Decent Jukebox</a>
+            </div>
+        </div>
         <button id="connect-wallet" class="centered-button">Connect Wallet</button>
         <button id="enter-controls" class="centered-button hidden">Enter Jukebox</button>
     </div>
 
     <!-- Controls View -->
+    <div class="jukebox-header">
+        <h2 class="jukebox-title">ECLIPSE</h2>
+        <div class="jukebox-subheader">
+            <span class="subheader-prefix">Powered by</span>
+            <a href="https://github.com/TheJollyLaMa/JollyJukeBox" target="_blank" class="subheader-link">Decent Jukebox</a>
+        </div>
+    </div>
+    
     <div id="controls" class="video-container hidden">
-        <video autoplay muted id="controls-video">
-            <source src="./assets/controls.mp4" type="video/mp4">
-        </video>
+        <div class="lcd-header left">ALBUMS</div>
+        <div class="lcd-header right">TRACKS</div>
 
-        <div id="controls-overlay" class="controls-overlay" >
+        <div id="controls-overlay" class="controls-overlay">
             <button id="add-album">Add Album</button>
         </div>
 
@@ -118,15 +132,51 @@
         <div id="song-list" class="scrollable-container"></div>
     </div>
 
-    <!-- Spinning Record View -->
+    <!-- Record View -->
     <div id="record" class="video-container hidden">
-        <video autoplay muted loop id="record-video">
-            <source src="./assets/spinning.mp4" type="video/mp4">
-        </video>
-
-        <video id="video-player" class="video-player hidden" controls autoplay></video>
-        <audio id="audio-player" controls autoplay></audio>
-
+        <audio id="audio-player"></audio>
+        <div class="custom-player">
+            <div class="player-info">
+                <div class="track-title">Now Playing</div>
+                <div class="track-name">Select a track to play</div>
+            </div>
+            <div class="player-controls">
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="time-display">
+                    <span class="current-time">0:00</span>
+                    <span class="duration">0:00</span>
+                </div>
+                <div class="control-buttons">
+                    <button class="control-btn" id="prev-track">
+                        <svg viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                    <button class="control-btn" id="play-pause">
+                        <svg viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M8 5v14l11-7z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                    <button class="control-btn" id="next-track">
+                        <svg viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="volume-control">
+                    <button class="control-btn" id="mute">
+                        <svg viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                    <div class="volume-slider">
+                        <div class="volume-progress"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <button id="back-to-controls" class="centered-button">Back to Controls</button>
     </div>
 

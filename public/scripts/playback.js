@@ -2,25 +2,57 @@ import { loadIcons } from "./icons.js";
 import { showTrackAndTokenSelectionModal, ShowTokenSelectionModal } from "./modals.js";
 import { approveToken } from "./contract.js";
 import { hideLoader, showLoader, resetTrackAndTokenSelectionModal } from "./utils.js";
+import CustomPlayer from "./player.js";
 
-
+let customPlayer = null;
 
 export const setupPlaySongButton = async (jukeboxContract, albumName, paymentTokens, playFee, albumCID) => {
     const playSongButton = document.getElementById("play-song");
     const controlsView = document.getElementById("controls");
     const recordView = document.getElementById("record");
     const backToControlsButton = document.getElementById("back-to-controls");
-    let mediaPlayer = null; // This will handle both audio and video players
-    // console.log("PlaySong button is rendered.")
-    // Fetch icons for tokens
-    // console.log("Payment Tokens:", paymentTokens);
-    // const fetchedIcons = await loadIcons(paymentTokens);
-    // console.log("Right LCD Payment Tokens:", paymentTokens);
-    // console.log("Fetched Icons:", fetchedIcons);
+
+    // Initialize custom player if not already initialized
+    if (!customPlayer) {
+        customPlayer = new CustomPlayer();
+    }
+
+    // List of IPFS gateways to try
+    const ipfsGateways = [
+        `https://${albumCID}.ipfs.w3s.link`,
+        `https://ipfs.io/ipfs/${albumCID}`,
+        `https://cloudflare-ipfs.com/ipfs/${albumCID}`,
+        `https://gateway.pinata.cloud/ipfs/${albumCID}`
+    ];
+
+    // Function to try loading from multiple gateways
+    const tryLoadFromGateways = async (filename) => {
+        for (const gateway of ipfsGateways) {
+            try {
+                const trackUrl = `${gateway}/${filename}`;
+                console.log(`Trying to load from: ${trackUrl}`);
+                const response = await fetch(trackUrl);
+                if (response.ok) {
+                    const blob = await response.blob();
+                    // Try to determine the content type from the filename
+                    const fileExtension = filename.split('.').pop().toLowerCase();
+                    let contentType = 'audio/mpeg'; // default
+                    if (fileExtension === 'mp3') contentType = 'audio/mpeg';
+                    else if (fileExtension === 'm4a') contentType = 'audio/mp4';
+                    else if (fileExtension === 'wav') contentType = 'audio/wav';
+                    else if (fileExtension === 'ogg') contentType = 'audio/ogg';
+                    
+                    const correctedBlob = new Blob([blob], { type: contentType });
+                    return URL.createObjectURL(correctedBlob);
+                }
+            } catch (error) {
+                console.log(`Failed to load from gateway: ${gateway}`, error);
+            }
+        }
+        throw new Error('Failed to load track from all gateways');
+    };
 
     playSongButton.addEventListener("click", async () => {
-        // console.log("playSong button clicked");
-
         try {
             // Extract the track list from the right LCD screen
             const trackRows = Array.from(document.querySelectorAll("#lcd-screen-right table tr"))
@@ -32,7 +64,7 @@ export const setupPlaySongButton = async (jukeboxContract, albumName, paymentTok
                         trackNameCell.innerText.trim() !== "" &&
                         isNaN(trackNameCell.innerText.trim()) &&
                         !trackNameCell.innerText.toLowerCase().includes("album play price")
-                    ); // Exclude invalid or unwanted rows
+                    );
                 });
 
             const trackList = trackRows.map((row) =>
@@ -47,29 +79,20 @@ export const setupPlaySongButton = async (jukeboxContract, albumName, paymentTok
             // Show the combined modal for track and token selection
             const { trackNumber, token } = await showTrackAndTokenSelectionModal(trackList, paymentTokens);
 
-            // console.log(`Selected track: ${trackNumber}, Selected token: ${token}`);
-
-            showLoader(); // Show loader while processing
-
-            // Approve the token for spending
-            // console.log(`Approving token ${token} for spending...`);
+            showLoader();
 
             try {
-
                 await approveToken(token, jukeboxContract.address, playFee);
-
             } catch (error) {
                 console.error("Error approving token:", error);
                 alert("Failed to approve token for spending. Please try again.");
-                hideLoader(); // Hide loader after processing
-                resetTrackAndTokenSelectionModal(); // Reset modal on failure
+                hideLoader();
+                resetTrackAndTokenSelectionModal();
                 return;
             }
 
             try {
-                // Call the contract function to play the song
                 console.log(`Playing track ${trackNumber + 1} from album "${albumName}"...`);
-                // console.log(`Sending payment ${token}...`);
                 const tx = await jukeboxContract.playSong(albumName, trackNumber, token, {
                     gasLimit: ethers.utils.hexlify(500000),
                 });
@@ -78,94 +101,31 @@ export const setupPlaySongButton = async (jukeboxContract, albumName, paymentTok
                 await tx.wait();
             } catch (error) {
                 console.error("Error playing track:", error);
-                // alert("Failed to play the track. Please try again.");
-                hideLoader(); // Hide loader after processing
-                resetTrackAndTokenSelectionModal(); // Reset modal on failure
+                hideLoader();
+                resetTrackAndTokenSelectionModal();
                 return;
             }
 
             console.log(`Track ${trackNumber + 1} is now playing! Payment successful.`);
 
-            // hideLoader(); // Hide loader after processing
-
-            // Extract the track filename
+            // Extract the track filename and try to load it
             const trackFilename = trackList[trackNumber];
-            const trackUrl = `https://${albumCID}.ipfs.w3s.link/${trackFilename}`;
+            try {
+                const audioUrl = await tryLoadFromGateways(trackFilename);
+                customPlayer.loadTrack(audioUrl, trackFilename);
+                controlsView.classList.add("hidden");
+                recordView.classList.remove("hidden");
+                customPlayer.play();
+            } catch (error) {
+                console.error("Failed to load audio:", error);
+                alert("Failed to load the audio file. Please try again later.");
+            }
 
-            // Fetch the file and play it
-            fetch(trackUrl)
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error(`Network response was not ok: ${response.statusText}`);
-                    }
-                    return response.blob();
-                })
-                .then((blob) => {
-                    const fileExtension = trackFilename.split('.').pop().toLowerCase(); // Get file extension
-                    const blobUrl = URL.createObjectURL(blob);
-
-                    // Check the file type and play in appropriate player
-                    if (fileExtension === "mp4" || fileExtension === "mov" || fileExtension === "wma" || fileExtension === "mkv") {
-                        // log the file
-                        console.log("Playing video file: ", trackUrl);
-                        // Play in video player
-                        const videoPlayer = document.getElementById("video-player");
-                        videoPlayer.src = blobUrl;
-                        videoPlayer.classList.remove("hidden");
-                        videoPlayer.play()
-                            .then(() => {
-                                console.log("Video is playing.");
-                                controlsView.classList.add("hidden");
-                                recordView.classList.remove("hidden");
-                                resetTrackAndTokenSelectionModal(); // Reset modal state
-                            })
-                            .catch((error) => {
-                                console.error("Error playing video:", error);
-                            });
-                        hideLoader(); 
-
-                        // Set the mediaPlayer to videoPlayer for consistent stop behavior
-                        mediaPlayer = videoPlayer;
-
-                        videoPlayer.onended = () => {
-                            URL.revokeObjectURL(blobUrl); // Clean up blob URL
-                            videoPlayer.classList.add("hidden");
-                            controlsView.classList.remove("hidden");
-                            recordView.classList.add("hidden");
-                        };
-                    } else {
-                        // Play in audio player
-                        const audioPlayer = document.getElementById("audio-player");
-                        audioPlayer.src = blobUrl;
-                        audioPlayer.classList.remove("hidden");
-                        audioPlayer.play()
-                            .then(() => {
-                                console.log("Audio is playing.");
-                                controlsView.classList.add("hidden");
-                                recordView.classList.remove("hidden");
-                            })
-                            .catch((error) => {
-                                console.error("Error playing audio:", error);
-                            });
-
-                        // Set the mediaPlayer to audioPlayer for consistent stop behavior
-                        mediaPlayer = audioPlayer;
-                        hideLoader(); // Hide loader after processing
-
-                        audioPlayer.onended = () => {
-                            URL.revokeObjectURL(blobUrl); // Clean up blob URL
-                        };
-                    }
-                })
-                .catch((error) => {
-                    console.error("Fetch error:", error);
-                    alert("Failed to play the media file. Please contact support.");
-                });
         } catch (error) {
             console.error("Error playing track:", error);
         } finally {
-            resetTrackAndTokenSelectionModal(); // Ensure modal is reset
-            hideLoader(); // Always hide the loader
+            resetTrackAndTokenSelectionModal();
+            hideLoader();
         }
     });
 
@@ -173,23 +133,24 @@ export const setupPlaySongButton = async (jukeboxContract, albumName, paymentTok
     backToControlsButton.addEventListener("click", () => {
         recordView.classList.add("hidden");
         controlsView.classList.remove("hidden");
-        if (mediaPlayer) {
-            mediaPlayer.classList.add("hidden");
+        if (customPlayer) {
+            customPlayer.pause();
         }
     });
 };
-
-
 
 export const setupPlayAlbumButton = (jukeboxContract, albumName, acceptedTokens, wholeAlbumFee, cid) => {
     const playAlbumButton = document.getElementById("play-album");
     const controlsView = document.getElementById("controls");
     const recordView = document.getElementById("record");
     const backToControlsButton = document.getElementById("back-to-controls");
-    let audioPlayer = null;
-    let videoPlayer = null;
     let currentTrackIndex = 0;
     let isPlayingAlbum = false;
+
+    // Initialize custom player if not already initialized
+    if (!customPlayer) {
+        customPlayer = new CustomPlayer();
+    }
 
     playAlbumButton.addEventListener("click", async () => {
         try {
@@ -201,14 +162,9 @@ export const setupPlayAlbumButton = (jukeboxContract, albumName, acceptedTokens,
 
             console.log(`Selected token for album playback: ${token}`);
 
-
-
-
-
-
             // Fetch track list
             const trackRows = Array.from(document.querySelectorAll("#lcd-screen-right table tr"))
-                .slice(1) // Skip the header row
+                .slice(1)
                 .filter((row) => {
                     const trackNameCell = row.querySelector("td:nth-child(2)");
                     return (
@@ -216,7 +172,7 @@ export const setupPlayAlbumButton = (jukeboxContract, albumName, acceptedTokens,
                         trackNameCell.innerText.trim() !== "" &&
                         isNaN(trackNameCell.innerText.trim()) &&
                         !trackNameCell.innerText.toLowerCase().includes("album play price")
-                    ); // Exclude invalid or unwanted rows
+                    );
                 });
 
             const trackList = trackRows.map((row) => row.querySelector("td:nth-child(2)").innerText.trim());
@@ -225,18 +181,14 @@ export const setupPlayAlbumButton = (jukeboxContract, albumName, acceptedTokens,
 
             if (trackList.length === 0) {
                 alert("No tracks available to play.");
-                resetTrackAndTokenSelectionModal(); // Reset modal state
+                resetTrackAndTokenSelectionModal();
                 return;
             }
 
-            showLoader(); // Show loader while processing
-
-            // Approve the token
-            console.log(`Approving token ${token} for album playback...`);            
+            showLoader();
 
             await approveToken(token, jukeboxContract.address, wholeAlbumFee);
 
-            // Call contract to play album
             console.log(`Playing entire album: "${albumName}"`);
             const tx = await jukeboxContract.playAlbum(albumName, token, {
                 gasLimit: ethers.utils.hexlify(300000),
@@ -246,7 +198,6 @@ export const setupPlayAlbumButton = (jukeboxContract, albumName, acceptedTokens,
             await tx.wait();
 
             console.log(`Album "${albumName}" is now playing. Payment successful!`);
-
 
             controlsView.classList.add("hidden");
             recordView.classList.remove("hidden");
@@ -258,124 +209,50 @@ export const setupPlayAlbumButton = (jukeboxContract, albumName, acceptedTokens,
             playNextTrack(trackList, cid);
         } catch (error) {
             console.error("Error playing album:", error);
-            // alert("An error occurred while playing the album. Please try again.");
         } finally {
-            resetTrackAndTokenSelectionModal(); // Always reset the modal state
-            hideLoader(); // Ensure the loader is hidden
+            resetTrackAndTokenSelectionModal();
+            hideLoader();
         }
     });
 
     const playNextTrack = async (trackList, cid) => {
-        showLoader(); // Show loader while processing
-
-        // Stop playback if album playback is completed
         if (!isPlayingAlbum || currentTrackIndex >= trackList.length) {
             console.log("Album playback completed.");
             isPlayingAlbum = false;
             currentTrackIndex = 0;
-
-            // Hide players and views, show controls view
-            if (audioPlayer) {
-                audioPlayer.pause();
-                URL.revokeObjectURL(audioPlayer.src);
-                audioPlayer = null;
-            }
-            if (videoPlayer) {
-                videoPlayer.pause();
-                URL.revokeObjectURL(videoPlayer.src);
-                videoPlayer.classList.add("hidden");
-                videoPlayer = null;
-            }
-            document.getElementById("record").classList.add("hidden");
-            document.getElementById("controls").classList.remove("hidden");
-            document.getElementById("video-player").classList.add("hidden");
-
-            hideLoader(); // Ensure loader is hidden after cleanup
+            recordView.classList.add("hidden");
+            controlsView.classList.remove("hidden");
             return;
         }
+
         const trackFilename = trackList[currentTrackIndex];
         const trackUrl = `https://${cid}.ipfs.w3s.link/${trackFilename}`;
-        const fileExtension = trackFilename.split('.').pop().toLowerCase(); // Get the file extension
 
         try {
-            showLoader(); // Show loader while processing
-            const response = await fetch(trackUrl);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch track: ${response.statusText}`);
-            }
+            customPlayer.loadTrack(trackUrl, trackFilename);
+            customPlayer.play();
 
-            const blob = await response.blob();
-            const blobUrl = URL.createObjectURL(blob);
+            // Listen for track end event
+            const handleTrackEnd = () => {
+                currentTrackIndex++;
+                document.removeEventListener('trackEnded', handleTrackEnd);
+                playNextTrack(trackList, cid);
+            };
 
-            // Clean up previous player instance
-            if (audioPlayer) {
-                audioPlayer.pause();
-                URL.revokeObjectURL(audioPlayer.src);
-                audioPlayer = null;
-            }
-            if (videoPlayer) {
-                videoPlayer.pause();
-                URL.revokeObjectURL(videoPlayer.src);
-                videoPlayer.classList.add("hidden");
-                videoPlayer = null;
-            }
-
-            // Check file type and play in the appropriate player
-            if (["mp4", "mkv", "mov", "wma"].includes(fileExtension)) {
-                // Video playback
-                const videoPlayer = document.getElementById("video-player");
-                videoPlayer.src = blobUrl;
-                videoPlayer.classList.remove("hidden");
-                videoPlayer.play()
-                    .then(() => {
-                        console.log(`Playing video track: ${trackFilename}`);
-                        hideLoader(); // Hide loader after video starts
-                    })
-                    .catch((error) => {
-                        console.error("Error playing video:", error);
-                        hideLoader(); // Ensure loader is hidden on error
-                    });
-
-                videoPlayer.onended = () => {
-                    console.log("Video ended. Moving to next track.");
-                    URL.revokeObjectURL(blobUrl); // Clean up blob URL
-                    currentTrackIndex++;
-                    playNextTrack(trackList, cid); // Play the next track
-                };
-            } else {
-                // Audio playback
-                audioPlayer = new Audio(blobUrl);
-                audioPlayer.play()
-                    .then(() => {
-                        console.log(`Playing audio track: ${trackFilename}`);
-                        hideLoader(); // Hide loader after audio starts
-                    })
-                    .catch((error) => {
-                        console.error("Error playing audio:", error);
-                        hideLoader(); // Ensure loader is hidden on error
-                    });
-
-                audioPlayer.onended = () => {
-                    console.log("Audio ended. Moving to next track.");
-                    URL.revokeObjectURL(blobUrl); // Clean up blob URL
-                    currentTrackIndex++;
-                    playNextTrack(trackList, cid); // Play the next track
-                };
-            }
+            document.addEventListener('trackEnded', handleTrackEnd);
         } catch (error) {
-            console.error("Error playing track:", error);
-            alert("Failed to play the track. Skipping to the next track...");
+            console.error(`Error playing track ${currentTrackIndex + 1}:`, error);
             currentTrackIndex++;
-            playNextTrack(trackList, cid); // Skip to the next track
+            playNextTrack(trackList, cid);
         }
     };
 
-    // Handle exiting the record spin view
     backToControlsButton.addEventListener("click", () => {
         recordView.classList.add("hidden");
         controlsView.classList.remove("hidden");
-        if (mediaPlayer) {
-            mediaPlayer.classList.add("hidden");
+        isPlayingAlbum = false;
+        if (customPlayer) {
+            customPlayer.pause();
         }
     });
 };

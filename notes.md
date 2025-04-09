@@ -70,6 +70,239 @@ ECLIPSE JukeBox is a Web3-based music player application, inspired by and aiming
 - Responsive controls for media playback
 - Loading states and user feedback
 
+## Codebase Structure and Organization
+
+### Directory Overview
+1. **Public Directory** - Main application files
+   - `index.html`: Main entry point
+   - `app.js`: Core application initialization
+   - `ethers.umd.min.js`: Ethereum interaction library
+
+2. **Scripts Directory** (`public/scripts/`)
+   - `contract.js`: Web3 contract interactions (273 lines)
+   - `wallet.js`: Wallet connection management (69 lines)
+   - `setupUI.js`: UI initialization and updates (466 lines)
+   - `playback.js`: Music playback controls (381 lines)
+   - `ui.js`: General UI functionality (577 lines)
+   - `utils.js`: Utility functions (148 lines)
+   - `modals.js`: Modal dialog management (403 lines)
+   - `icons.js`: Icon and token-related functionality (145 lines)
+   - `engagement_rewards.js`: Reward system (79 lines)
+   - `events.js`: Event handling system (73 lines)
+   - `aave_kiss.js`: AAVE integration (83 lines)
+
+3. **Styles Directory** (`public/styles/`)
+   - `style.css`: Main application styles (546 lines)
+   - `token-selection-modal.css`: Token selection UI (98 lines)
+   - `about-modal.css`: About dialog styling (219 lines)
+   - `credits.css`: Credits screen styling (158 lines)
+   - `loader.css`: Loading animations (185 lines)
+   - `mobile-style.css`: Mobile-specific styles (105 lines)
+   - `events.css`: Event-related styling (70 lines)
+   - `engagement-rewards.css`: Rewards UI styling (313 lines)
+   - `aave.css`: AAVE integration styling (33 lines)
+
+4. **Assets Directory** (`public/assets/`)
+   - Contract ABIs:
+     - Multiple version-specific ABI JSON files
+     - ERC20 token ABI
+   - Media Files:
+     - Video: landing.mp4, controls.mp4, spinning.mp4
+     - Audio: bar_crowd.m4a
+     - Images: Various logos and icons
+   - Animation Files:
+     - Credits animations
+     - Loading animations
+     - UI transitions
+
+### Key Features Implementation
+1. **Wallet Integration**
+   - MetaMask connection handling
+   - Network switching support
+   - Contract initialization
+   - Transaction management
+
+2. **Album Management**
+   - Album listing and display
+   - Track management
+   - IPFS integration for media storage
+   - Payment processing
+
+3. **User Interface**
+   - Dual LCD screen display system
+   - Modal dialogs for interactions
+   - Responsive design elements
+   - Loading states and animations
+
+4. **Media Playback**
+   - Audio/video player integration
+   - Playlist management
+   - Track controls
+   - Volume management
+
+### Development Workflow
+1. **Initialization**
+   - App starts from index.html
+   - app.js handles core initialization
+   - Contract and wallet setup
+   - UI preparation
+
+2. **User Flow**
+   - Wallet connection
+   - Album browsing
+   - Track selection
+   - Payment processing
+   - Media playback
+
+3. **State Management**
+   - Local storage for preferences
+   - Session management
+   - Contract state tracking
+   - Playback state handling
+
+### Technical Dependencies
+1. **External Libraries**
+   - ethers.js for blockchain interaction
+   - Web3 integration
+   - IPFS client libraries
+
+2. **Smart Contracts**
+   - Multiple version support
+   - ERC20 token integration
+   - Custom jukebox contracts
+
+3. **Media Handling**
+   - IPFS gateway integration
+   - Audio/video format support
+   - Streaming capabilities
+
+## Application Flow and Core Files
+
+### 1. Server Setup (`index.js`)
+- Express server configuration
+- Static file serving from public directory
+- CORS and JSON middleware
+- Health check endpoint (`/api/health`)
+- Default route serving `index.html`
+- Port configuration (default: 3000)
+
+### 2. Entry Point (`public/index.html`)
+- Core HTML structure with key sections:
+  * Loader with animated icons
+  * Wallet display and contract version selector
+  * Landing page with video background
+  * Controls view with dual LCD screens
+  * Modal interfaces for various actions
+  * Credits and about sections
+- External dependencies:
+  * ethers.umd.min.js for blockchain interaction
+  * Multiple CSS files for modular styling
+- Key UI Components:
+  * Dual LCD screens for album/track display
+  * Token selection modals
+  * Add album interface
+  * Playback controls
+  * Engagement rewards system
+
+### 3. Core Application Logic (`public/app.js`)
+- Main application initialization and event handling
+- Key Features:
+  * Contract version management
+  * Wallet connection flow
+  * Session state management
+  * UI state transitions
+  * Credits system handling
+  * Modal management
+- State Management:
+  * Uses localStorage for persistence
+  * Session-based refresh handling
+  * Wallet connection state
+  * Jukebox entry state
+- Event Listeners:
+  * DOMContentLoaded initialization
+  * Wallet connection events
+  * Version switching
+  * UI transitions
+  * Modal interactions
+
+### 4. Package Configuration (`package.json`)
+- Application metadata:
+  * Name: jollyjukebox
+  * Version: 1.0.0
+  * Description: Web3 JukeBox
+- Scripts:
+  * `dev`: Development server using `node index.js`
+  * `start`: Production server using `node index.js`
+- Dependencies:
+  * cors: ^2.8.5 - Cross-origin resource sharing
+  * dotenv: ^16.4.5 - Environment configuration
+  * ethers: ^6.13.4 - Ethereum interaction
+  * express: ^4.21.1 - Web server framework
+
+### Application Flow Sequence
+
+1. **Initial Load**
+   ```sequence
+   index.js -> public/index.html: Serve static files
+   public/index.html -> app.js: Load and initialize
+   app.js -> contract.js: Initialize contracts
+   app.js -> wallet.js: Setup wallet connection
+   app.js -> setupUI.js: Prepare UI components
+   ```
+
+2. **User Interaction Flow**
+   ```sequence
+   User -> Landing Page: Connect Wallet
+   Landing Page -> Wallet Connection: MetaMask Integration
+   Wallet Connection -> Controls View: Enter Jukebox
+   Controls View -> Album List: Display in Left LCD
+   Album Selection -> Track List: Display in Right LCD
+   Track Selection -> Playback: Process Payment and Play
+   ```
+
+3. **State Management**
+   - Session Tracking:
+     * `isRefreshed` in sessionStorage
+     * `walletConnected` in localStorage
+     * `enteredJukebox` in localStorage
+   - Contract State:
+     * Current version tracking
+     * Contract address management
+     * Network state monitoring
+
+4. **Error Handling**
+   - Wallet connection failures
+   - Contract initialization errors
+   - Network switching issues
+   - Media playback problems
+   - Transaction processing errors
+
+### Key Integration Points
+
+1. **Blockchain Integration**
+   - Contract initialization and version management
+   - Wallet connection and state management
+   - Transaction processing and event handling
+   - Network switching and chain ID validation
+
+2. **Media Management**
+   - Video background handling
+   - Audio playback control
+   - IPFS content loading
+   - Format support and conversion
+
+3. **UI/UX Components**
+   - Modal system for user interactions
+   - LCD screen management
+   - Loading states and animations
+   - Responsive design handling
+
+4. **Security Considerations**
+   - Wallet connection validation
+   - Transaction signing security
+   - Content access control
+   - State management security
+
 ## Key Features
 1. **Album Management**
    - Browse available albums
@@ -963,3 +1196,113 @@ Today's focus was on the LCD screen positioning and scaling:
 - The LCD screens are currently positioned inside the video container
 - Video scaling is handled by the `updateVideoScale` function in `ui.js`
 - The video container uses CSS transform scale with a custom property: `transform: scale(var(--video-scale, 1))`
+
+## UI Improvements
+
+### Layout and Design
+- Implemented a minimalist black and white theme
+- Added "ECLIPSE" title and "Powered by Decent Jukebox" subheader in the top left
+- Positioned LCD screens at optimal height (29.3% from top)
+- Made both LCD screens exactly the same size (27.5% width × 27.8% height)
+- Added "ALBUMS" and "TRACKS" headers above respective LCD screens
+- Made "TRACKS" header appear/disappear with right LCD screen
+- Centered the Connect Wallet button and increased its width by 50%
+
+### LCD Screens
+- Left LCD (Albums):
+  - Fixed width to 27.5%
+  - Fixed height to 27.8%
+  - Positioned at 14.75% from left
+  - Always visible "ALBUMS" header
+
+- Right LCD (Tracks):
+  - Matched exact dimensions with left LCD
+  - Improved track list display with proper spacing
+  - Added synchronized "TRACKS" header visibility
+  - Clean table layout for track information
+
+### Navigation
+- Streamlined the "Connect Wallet" to "Enter Jukebox" flow
+- Improved button positioning and spacing
+- Enhanced visibility of interactive elements
+
+### Visual Feedback
+- Added smooth transitions for all interactive elements
+- Synchronized animations between related components
+- Improved visibility states for modals and overlays
+
+## Functionality
+- Maintained all existing jukebox features while improving UI
+- Enhanced the visibility logic for LCD screens and headers
+- Preserved album selection and playback functionality
+- Kept token selection and payment systems intact
+
+## Next Steps
+(To be filled with upcoming tasks and improvements)
+
+## Recent Improvements
+
+### Audio Playback Enhancement
+- Implemented multiple IPFS gateway fallbacks for more reliable audio playback
+- Added support for various audio formats (mp3, m4a, wav, ogg)
+- Gateway fallback order:
+  1. w3s.link
+  2. ipfs.io
+  3. cloudflare-ipfs.com
+  4. gateway.pinata.cloud
+- Improved error handling and user feedback for audio loading issues
+- Added content type detection based on file extension
+
+### UI Improvements
+- Implemented minimalist black and white theme
+- Added "ECLIPSE" title with Audiowide font
+- Added "Powered by Decent Jukebox" subtitle with GitHub link
+- Centered and enlarged the "Connect Wallet" button (50% larger horizontally)
+- Improved visibility of the custom audio player:
+  - Positioned above LCD screens (z-index: 100)
+  - Maintained clean, modern aesthetic
+  - Added responsive controls and progress bar
+
+### Player Features
+- Custom audio controls:
+  - Play/Pause
+  - Track progress bar with animated wave effect
+  - Volume control
+  - Track name display
+  - Time display
+- Seamless integration with the jukebox interface
+- Maintains visibility above LCD screens while playing
+- "Back to Controls" button positioned at 75% from top for optimal spacing
+- Persistent header with title and subheader (fixed position, z-index: 1000)
+
+### Progress Bar Enhancement
+- Replaced standard progress bar with animated wave visualization
+- Interactive clickable wave effect for seeking through tracks
+- Dual-layer wave animation with crossing patterns
+- Responsive hover effects that intensify animation
+- Height increased to 40px for better visualization
+- Semi-transparent gradients for depth effect
+
+### Header Persistence
+- Title "ECLIPSE" and subheader now remain visible during playback
+- Fixed positioning at top-left corner
+- Z-index: 1000 ensures visibility above all other elements
+- Maintains consistent branding throughout the experience
+
+### Background
+- Removed video background
+- Implemented pure black background for cleaner aesthetic
+- Streamlined "Connect Wallet" to "Enter Jukebox" flow
+
+### LCD Display
+- Added "ALBUMS" and "TRACKS" headers
+- Maintained LCD screen functionality while improving player visibility
+- Z-index hierarchy ensures proper layering of interface elements
+
+## Technical Details
+- Custom player z-index: 100 (above LCD screens at z-index: 20)
+- Header z-index: 1000 (above all elements)
+- Audio player supports multiple formats with automatic content-type detection
+- Multiple IPFS gateway support for improved reliability
+- Responsive design maintains consistency across different screen sizes
+- Wave animation uses CSS gradients and transforms for smooth performance

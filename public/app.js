@@ -266,8 +266,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 let {jukeboxContract, contractAddress, chainId} = await connectWallet();
                 
                 window.jukeboxContract = jukeboxContract;    
-                // console.log("Jukebox contract initialized:", contractAddress);   
-                // console.log("window.jukeboxContract:", window.jukeboxContract);
 
                 localStorage.setItem("walletConnected", "true");
                 connectWalletButton.classList.add("hidden");
@@ -277,8 +275,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 displayContractAddress(contractAddress, chainId);
                 setupUI(jukeboxContract);
-                // Initialize the event listener
                 setupEventListener(jukeboxContract);
+
+                // Automatically trigger the Enter Jukebox button click
+                enterControlsButton.click();
 
             } catch (error) {
                 console.error("Error during wallet connection:", error.message || error);

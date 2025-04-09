@@ -76,6 +76,7 @@ export const waitForRenderedAlbums = (container, timeout = 20000, interval = 200
 // called from contract.js from inside the loadAlbums function on album click() event
 export const updateRightLCD = async (jukeboxContract, albumName) => {
     const lcdRight = document.getElementById("lcd-screen-right");
+    const tracksHeader = document.querySelector(".lcd-header.right");
     
     document.getElementById("right-lcd-buttons").classList.remove("hidden");
     document.getElementById("right-lcd-buttons").classList.add("visible");
@@ -222,30 +223,15 @@ export const updateRightLCD = async (jukeboxContract, albumName) => {
 
         // Update the right LCD screen
         lcdRight.innerHTML = `
-            <div style="text-align: center; margin-bottom: 10px;">
-                <!-- Header Section -->
-                <table style="width: 100%; font-size: 12px; font-family: Comic Sans MS; color: #96f7e5; text-align: left;">
-                    <tr>
-                        <th style="padding: 5px;">Single Play Fee</th>
-                        <th style="padding: 5px;">Album Fee</th>
-                        <th style="padding: 5px;">Accepted Tokens</th>
-                    </tr>
-                    <tr>
-                        <td style="padding: 5px;">${playFeeDisplay}</td>
-                        <td style="padding: 5px;">${wholeAlbumFeeDisplay}</td>
-                        <td style="padding: 5px;">${tokenIcons}</td>
-                    </tr>
-                </table>
-                <!-- Album Details Section -->
-                <div style="margin-top: 3px; text-align: left; font-size: 12px;">
-                    <div>Album Name:</div>
-                    ${albumName}<br>
-                    Owners:<br>
-                    ${formattedOwners}
+            <div style="text-align: center;">
+                <!-- Album Header Section -->
+                <div style="text-align: left; padding: 15px; border-bottom: 1px solid #9afef7; margin-bottom: 15px;">
+                    <div style="font-size: 18px; color: white; margin-bottom: 8px;">${albumName}</div>
+                    <div style="font-size: 14px; color: white; opacity: 0.7;">owner: ${formattedOwners}</div>
                 </div>
                 <!-- Track List Section -->
-                <div style="margin-top: 5px; text-align: left;">
-                    <div style="max-height: 150px; overflow-y: auto; padding: 10px; background-color: rgba(0, 0, 0, 0.1); border: 1px solid #9afef7;">
+                <div style="text-align: left;">
+                    <div style="max-height: 200px; overflow-y: auto; padding: 10px; background-color: rgba(0, 0, 0, 0.1); border: 1px solid #9afef7;">
                         <table style="width: 100%; font-size: 12px; font-family: Comic Sans MS; color: #96f7e5; text-align: left;">
                             <tr>
                                 <th>#</th>
@@ -257,8 +243,12 @@ export const updateRightLCD = async (jukeboxContract, albumName) => {
                 </div>
             </div>
         `;
-        lcdRight.classList.add("visible");
         
+        // Make both the LCD screen and header visible
+        lcdRight.classList.add("visible");
+        if (tracksHeader) {
+            tracksHeader.classList.add("visible");
+        }
 
         // Set up Play Song and Play Album buttons
         setupPlaySongButton(jukeboxContract, albumName, selectedPaymentTokens, playFee, cid);
