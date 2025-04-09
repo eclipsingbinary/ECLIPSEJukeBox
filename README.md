@@ -1,122 +1,101 @@
-<div  style="font-family: 'Comic Sans MS', cursive; font-size: 24px; color: white; background-color: black; padding: 10px;" align="center">
-    <img src="https://bafybeic5bvnkjejuxbogn2n7lyzfyf5l6glgzrxkidjwj4yvhyci5haoca.ipfs.w3s.link/PolygonLogo.png" alt="Ens_Eth_Breathe Logo" width="100" height="100">
-    <img src="https://raw.githubusercontent.com/TheJollyLaMa/JollyJukeBox/main/public/assets/Decent_Jukebox_QR.png" alt="JukeBox QR code" width="400" height="400">
-    <img src="https://bafybeig67sj4te7xkz5ku67ksnhxdfzikblc77gsecv53owxe6b4z5aega.ipfs.w3s.link/MintMeLogo.png" alt="MetaMask Logo" width="100" height="100">
-</div>
+# ECLIPSE
 
 <div align="center">
-    <img src="https://bafybeicft2vkf4jfqex4j2xjr5t2yzrdlticyboc2gbf325ztjqpv5ng24.ipfs.w3s.link/MetaMaskFox.png" alt="MetaMask Logo" width="100" height="100">
-    <h1>🎵 Decent JukeBox 🎵</h1>
+    <h1 style="font-family: 'Audiowide', sans-serif;">ECLIPSE</h1>
+    <p>A Modern Web3 Jukebox Experience powered by <a href="https://github.com/TheJollyLaMa/JollyJukeBox">Decent Jukebox</a></p>
 </div>
 
+## 🎵 Features
 
-<div align="center">
-    	<img height=auto width=auto src="https://github.com/TheJollyLaMa/JollyJukeBox/blob/main/public/assets/Controls_Demo.gif">
-</div>
+- **Minimalist Black & White Interface**: Clean, modern design focused on the music experience
+- **Multi-Gateway IPFS Support**: Reliable playback through multiple IPFS gateways
+- **Custom Audio Player**:
+  - Animated waveform progress visualization
+  - Intuitive playback controls
+  - Real-time progress tracking
+  - Volume control with visual feedback
+- **Web3 Integration**:
+  - Seamless wallet connection
+  - Multiple token support
+  - Transparent blockchain transactions
+- **Responsive Design**: Optimized for various screen sizes
 
-<div>
-    <p>
-    This ain't your Grandma's Jukebox! Check out the <a href="https://thejollylama.github.io/JollyJukeBox/public/" target="_blank">Decent JukeBox </a> to play around with some tunes and see what's possible with Web3!</p>
-    <p>While you're listening, come join the community and get on the books at <a href="https://www.mintme.com/token/DecentJukebox">Decent Jukebox on MintMe</a>.</p>
-    <p>
-    🎶🎶 Enjoy the tunes! 🎶🎶
-    </p>
-</div>
-<div>
-    <h2>Credits:</h2>
-    <p>BOBDUB - for the render request and brainstorm sessions.
-    <br>
-    <a href="https://www.mintme.com/token/bobdubbloon" target="_blank"> BobDub on MintMe </a> </p>
-    <p>MTCG - for the ecosystem of Web3 friends to watch learn and grow together. while apart.
-    <br>
-    <a href="https://www.mintme.com/token/mtcg"  > MTCG on MintMe </a> </p>
-    <p><a href="https://innovationassets.gumroad.com/?recommended_by=library&_gl=1*e3bpgc*_ga*MTA0MTE3Nzg4NC4xNzMyMjkwNzEw*_ga_6LJN6D94N6*MTczMjI5MDcxMC4xLjEuMTczMjI5MDcyMC4wLjAuMA.." target="_blank"> JukeBox Creator on Gumroad </a> - for the sweet 3d model to put our own blender render remix onto. 
-    </p>
-    <br>
-    <p>
-        This project brought to you by Decent Agency in collaboration with Decent Production and Decent Smart Homes. Decent JukeBox is one of the many ways to play around with the increased agency inherent in Web3 - after the work is done and home is in codified order, of course.
-        <br>
-        <a href="https://www.mintme.com/token/DecentSmartHomes" target="_blank">Decent Smart Homes on MintMe</a>
-    </p>
-</div>
+## 🎮 Interface
 
+### Landing Page
+![Landing Page](screenshots/landing.png)
+- Clean, minimalist black background
+- Glowing "ECLIPSE" title in modern Audiowide font
+- "Powered by Decent Jukebox" subtitle with link
+- Centered "Connect Wallet" button with elegant border styling
 
-# Metamask
-<div>
-    <img src="https://bafybeicft2vkf4jfqex4j2xjr5t2yzrdlticyboc2gbf325ztjqpv5ng24.ipfs.w3s.link/MetaMaskFox.png" alt="MetaMask Logo" width="50" height="50">
-    <p>
-    MetaMask is a software cryptocurrency wallet used to interact with the Ethereum blockchain. It allows users to access their Ethereum wallet through a browser extension or mobile app, which can then be used to interact with decentralized applications (dApps) on the web.
-    </p>
-    <p>
-    MetaMask also allows users to store and manage account keys, broadcast transactions, send and receive cryptocurrencies, and securely connect to decentralized applications through a compatible web browser or mobile app.
-    </p>
-    <p>Decent Jukebox currently opperates on the Polygon and Mintme chains. Chain information can always be found and verified at <a href="https://chainlist.org/" target="_blank">Chainlist.org</a> to ensure your metamask is connected to the proper endpoints.</p>
-    
-</div>
+### Music Player
+![Player Interface](screenshots/player.png)
+- Custom-designed audio player with waveform visualization
+- Intuitive controls for play/pause, track progress, and volume
+- Clean layout with optimal visibility
 
-# IPFS and Web3.Storage
-<div>
-    <img src="https://bafybeidxx2mbmne45dqr5c572ynzly6asn7qns6uvdyhak7576nygcu4ym.ipfs.w3s.link/IPFS_Logo.png" alt="IPFS Logo" width="50" height="50">
-    <img src="https://bafybeih7e5eyvfs64oimtn5ywti2lovl3ydysq5mcoxbefpx2qkly4rdrq.ipfs.w3s.link/web3storage.png" alt="web3.storage Logo" width="50" height="50">
-    <p>
-    IPFS (InterPlanetary File System) is a protocol and network designed to create a content-addressable, peer-to-peer method of storing and sharing hypermedia in a distributed file system. IPFS was initially designed by Juan Benet, and is now an open-source project developed with help from the community.
-    </p>
-    <p>
-    Web3.Storage is a service that makes it easy to store and retrieve data on the IPFS network. It provides a simple API that allows developers to store and retrieve data without having to run their own IPFS node. Web3.Storage is built on top of the IPFS network, and provides a reliable and scalable way to store and retrieve data on IPFS.
-    </p>
-    <p>
-    Decent JukeBox uses IPFS and Web3.Storage to store and retrieve the music files that are played on the platform. This allows users to access the music files from anywhere in the world, without having to rely on a centralized server.
-    </p>
-   <h2> Keep your Data DECENT! <h2>
-</div>
+### Album Selection
+![Album Selection](screenshots/albums.png)
+- Dual LCD display interface
+- Clear album and track listings
+- Easy navigation between controls
 
-# Web3 and Decentralized Web
-<div>
-    <!-- link to web3 video on youtube -->
-    <a href="https://www.youtube.com/watch?v=nHhAEkG1y2U" target="_blank">
-        What is <img src="https://github.com/TheJollyLaMa/JollyJukeBox/blob/main/public/assets/web3_logo.png" alt="Web3 Logo" width="50" height="50"> ?
-    </a>
-    <p>
-    Web3 is a term used to describe the next generation of the internet, which is built on decentralized technologies such as blockchain and smart contracts. Web3 aims to create a more open, secure, and user-centric web that empowers individuals and removes the need for intermediaries.
-    </p>
-    <p>
-    Decentralized web technologies such as IPFS, Ethereum, and smart contracts are key components of Web3. These technologies enable users to interact with applications and services in a peer-to-peer manner. Decent Jukebox is an examplary use of the Web3 technologies being explored and developed by the Decent Agency for use in The Decent Smart Home algorithms.
-    </p>
-</div>
+## 🚀 Getting Started
 
-# Relevant Contracts to the Project
+1. Visit [ECLIPSE Jukebox](https://eclipsingbinary.github.io/ECLIPSEJukeBox/)
+2. Connect your Web3 wallet (MetaMask recommended)
+3. Browse and select from available albums
+4. Choose your preferred payment token
+5. Enjoy the music!
 
-[Decent JukeBox V1.2 on Polygon](https://polygonscan.com/address/0xACB7850f5836fD9981c7d01F2Ca64628a661f287)
+## 💻 Technical Features
 
-[Decent JukeBox V1.2 on MintMe](https://www.mintme.com/explorer/addr/0x95f35eb32feaa8dd025bbf1aaec157091cca6dd2)
+- **Multiple IPFS Gateway Support**:
+  - Web3.Storage
+  - IPFS.io
+  - Cloudflare IPFS
+  - Pinata Gateway
+- **Smart Contract Integration**:
+  - Polygon Network support
+  - Multiple token payment options
+  - Transparent fee structure
 
-[Decent JukeBox V1.1 on Polygon](https://polygonscan.com/address/0x180Cf8CB681a083A73c997809FF60Df857010bF9)
+## 🔧 Development
 
+ECLIPSE is built on top of the [Decent Jukebox](https://github.com/TheJollyLaMa/JollyJukeBox) platform, enhancing it with:
+- Modern UI/UX design principles
+- Improved playback reliability
+- Enhanced visual feedback
+- Streamlined user interactions
 
-[SmartHome Test Token on Polygon](https://polygonscan.com/address/0x81cCeF6414D4CDbed9FD6Ea98c2D00105800cd78)
+## 📄 Contract Information
+
+- [Decent JukeBox V1.2.3 on Polygon](https://polygonscan.com/address/0xACB7850f5836fD9981c7d01F2Ca64628a661f287)
+- [Previous Versions](https://github.com/TheJollyLaMa/JollyJukeBox)
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
 ## 📞 Contact
 
-If you have any questions or suggestions, feel free to reach out to us at [jollysimsiddhi@gmail.com](mailto:jollysimsiddhi@gmail.com).
+For questions or suggestions, reach out to us:
+- GitHub Issues: [Open an issue](https://github.com/eclipsingbinary/ECLIPSEJukeBox/issues)
+- Email: [contact@eclipse.com](mailto:contact@eclipse.com)
 
-_________________________🦟________________________________________________________🕷️____
+## 🙏 Credits
 
-🪲 Found a bug? 🦟 [Open an issue](https://github.com/TheJollyLaMa/JollyJukeBox/issues/new/choose)🐜 and check out 🐞 our bug bounty on 🐜 [MintMe]("https://www/mintme.com/tokens/DecentJukebox") 🐛
-
-
+- Built on [Decent Jukebox](https://github.com/TheJollyLaMa/JollyJukeBox)
+- UI/UX Design: ECLIPSE Team
+- Smart Contract: Decent Agency
 
 <div align="center">
-<br><br>
-    <img src="https://github.com/TheJollyLaMa/JollyJukeBox/blob/main/public/assets/web3_logo.png" alt="Web3 Logo" width="50" height="50">
-    <img src="https://bafybeih7e5eyvfs64oimtn5ywti2lovl3ydysq5mcoxbefpx2qkly4rdrq.ipfs.w3s.link/web3storage.png" alt="web3.storage Logo" width="50" height="50">
+    <br>
     <img src="https://bafybeic5bvnkjejuxbogn2n7lyzfyf5l6glgzrxkidjwj4yvhyci5haoca.ipfs.w3s.link/PolygonLogo.png" alt="Polygon Logo" width="50" height="50">
-    <img src="https://bafybeig67sj4te7xkz5ku67ksnhxdfzikblc77gsecv53owxe6b4z5aega.ipfs.w3s.link/MintMeLogo.png" alt="MintMe Logo" width="50" height="50">
-    <img src="https://bafybeigr6ri2ythjbciusgjdvimjt74caymflc5ut4rmtrkhcoi2cr53ua.ipfs.w3s.link/DecentSmartHome.png" alt="DecentSmartHome Logo" width="50" height="50">
-    <img src="https://bafybeifej4defs5s5wryxylmps42c7xkbzle3fxjgnsbb5hcfnd5b77zwa.ipfs.w3s.link/Ens_Eth_Breathe.gif" alt="Ens_Eth_Breathe Logo" width="50" height="50">
-    <img src="https://bafybeie7l66frjp4im2xrsd3wxlhwcve4bxuxqrvs6i3a33untc6mwwkgm.ipfs.w3s.link/node_logo.png" alt="Node Logo" width="50" height="50">
-    <img src="https://bafybeicpv5ao6nyxhdln45jrd4gslyhrsagq72vvzmdpb2tsbm2vkz5jc4.ipfs.w3s.link/solidity.png" alt="Solidity Logo" width="50" height="50">
+    <img src="https://bafybeih7e5eyvfs64oimtn5ywti2lovl3ydysq5mcoxbefpx2qkly4rdrq.ipfs.w3s.link/web3storage.png" alt="web3.storage Logo" width="50" height="50">
     <img src="https://bafybeidxx2mbmne45dqr5c572ynzly6asn7qns6uvdyhak7576nygcu4ym.ipfs.w3s.link/IPFS_Logo.png" alt="IPFS Logo" width="50" height="50">
     <img src="https://bafybeicft2vkf4jfqex4j2xjr5t2yzrdlticyboc2gbf325ztjqpv5ng24.ipfs.w3s.link/MetaMaskFox.png" alt="MetaMask Logo" width="50" height="50">
     <br>
-    Keep Your Data Decent!
+    <p>Keep Your Music Decent!</p>
 </div>
