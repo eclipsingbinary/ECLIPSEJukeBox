@@ -1266,28 +1266,12 @@ Today's focus was on the LCD screen positioning and scaling:
 ### Player Features
 - Custom audio controls:
   - Play/Pause
-  - Track progress bar with animated wave effect
+  - Track progress bar
   - Volume control
   - Track name display
   - Time display
 - Seamless integration with the jukebox interface
 - Maintains visibility above LCD screens while playing
-- "Back to Controls" button positioned at 75% from top for optimal spacing
-- Persistent header with title and subheader (fixed position, z-index: 1000)
-
-### Progress Bar Enhancement
-- Replaced standard progress bar with animated wave visualization
-- Interactive clickable wave effect for seeking through tracks
-- Dual-layer wave animation with crossing patterns
-- Responsive hover effects that intensify animation
-- Height increased to 40px for better visualization
-- Semi-transparent gradients for depth effect
-
-### Header Persistence
-- Title "ECLIPSE" and subheader now remain visible during playback
-- Fixed positioning at top-left corner
-- Z-index: 1000 ensures visibility above all other elements
-- Maintains consistent branding throughout the experience
 
 ### Background
 - Removed video background
@@ -1301,8 +1285,6 @@ Today's focus was on the LCD screen positioning and scaling:
 
 ## Technical Details
 - Custom player z-index: 100 (above LCD screens at z-index: 20)
-- Header z-index: 1000 (above all elements)
 - Audio player supports multiple formats with automatic content-type detection
 - Multiple IPFS gateway support for improved reliability
 - Responsive design maintains consistency across different screen sizes
-- Wave animation uses CSS gradients and transforms for smooth performance

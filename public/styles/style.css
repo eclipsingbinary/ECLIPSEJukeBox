@@ -578,10 +578,10 @@ html {
 
 /* Jukebox Header */
 .jukebox-header {
-    position: fixed; /* Change to fixed to stay in place */
+    position: absolute;
     top: 20px;
     left: 100px;
-    z-index: 1000; /* Increase z-index to stay above everything */
+    z-index: 25;
 }
 
 .jukebox-title {
