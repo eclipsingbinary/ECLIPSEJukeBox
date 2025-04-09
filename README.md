@@ -43,7 +43,7 @@
 
 ## 🚀 Getting Started
 
-1. Visit [ECLIPSE Jukebox](https://eclipsingbinary.github.io/ECLIPSEJukeBox/)
+1. Visit [ECLIPSE Jukebox](https://eclipsingbinary.github.io/ECLIPSEJukeBox/public/)
 2. Connect your Web3 wallet (MetaMask recommended)
 3. Browse and select from available albums
 4. Choose your preferred payment token
