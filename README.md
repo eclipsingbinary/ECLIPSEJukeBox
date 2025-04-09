@@ -1,7 +1,7 @@
 # ECLIPSE
 
 <div align="center">
-    <h1 style="font-family: 'Audiowide', sans-serif;">ECLIPSE</h1>
+    <img src="screenshots/title.png" alt="ECLIPSE" width="100%">
     <p>A Modern Web3 Jukebox Experience powered by <a href="https://github.com/TheJollyLaMa/JollyJukeBox">Decent Jukebox</a></p>
 </div>
 
@@ -23,7 +23,7 @@
 ## 🎮 Interface
 
 ### Landing Page
-![Landing Page](screenshots/landing.png)
+![Landing Page](screenshots/landing-page.png)
 - Clean, minimalist black background
 - Glowing "ECLIPSE" title in modern Audiowide font
 - "Powered by Decent Jukebox" subtitle with link
@@ -36,7 +36,7 @@
 - Clean layout with optimal visibility
 
 ### Album Selection
-![Album Selection](screenshots/albums.png)
+![Album Selection](screenshots/albums-selection.png)
 - Dual LCD display interface
 - Clear album and track listings
 - Easy navigation between controls
