@@ -78,12 +78,6 @@ ECLIPSE is built on top of the [Decent Jukebox](https://github.com/TheJollyLaMa/
 
 Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
-## 📞 Contact
-
-For questions or suggestions, reach out to us:
-- GitHub Issues: [Open an issue](https://github.com/eclipsingbinary/ECLIPSEJukeBox/issues)
-- Email: [contact@eclipse.com](mailto:contact@eclipse.com)
-
 ## 🙏 Credits
 
 - Built on [Decent Jukebox](https://github.com/TheJollyLaMa/JollyJukeBox)
