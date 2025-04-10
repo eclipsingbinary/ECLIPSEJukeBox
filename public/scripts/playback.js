@@ -152,15 +152,24 @@ export const setupPlayAlbumButton = (jukeboxContract, albumName, acceptedTokens,
         customPlayer = new CustomPlayer();
     }
 
+    // List of IPFS gateways to try
+    const ipfsGateways = [
+        `https://${cid}.ipfs.w3s.link`,
+        `https://ipfs.io/ipfs/${cid}`,
+        `https://cloudflare-ipfs.com/ipfs/${cid}`,
+        `https://gateway.pinata.cloud/ipfs/${cid}`
+    ];
+
     playAlbumButton.addEventListener("click", async () => {
         try {
-            console.log("Initiating Play Album...");
-            console.log("Accepted tokens for album:", acceptedTokens);
+            console.log("=== Starting Album Playback ===");
+            console.log(`Album: ${albumName}`);
+            console.log(`CID: ${cid}`);
+            console.log("Accepted tokens:", acceptedTokens);
 
             // Show the modal for token selection
             const { token } = await ShowTokenSelectionModal(acceptedTokens);
-
-            console.log(`Selected token for album playback: ${token}`);
+            console.log(`Selected token for payment: ${token}`);
 
             // Fetch track list
             const trackRows = Array.from(document.querySelectorAll("#lcd-screen-right table tr"))
@@ -177,7 +186,10 @@ export const setupPlayAlbumButton = (jukeboxContract, albumName, acceptedTokens,
 
             const trackList = trackRows.map((row) => row.querySelector("td:nth-child(2)").innerText.trim());
 
-            console.log("Track list for album playback:", trackList);
+            console.log("=== Track List ===");
+            trackList.forEach((track, index) => {
+                console.log(`${index + 1}. ${track}`);
+            });
 
             if (trackList.length === 0) {
                 alert("No tracks available to play.");
@@ -187,9 +199,10 @@ export const setupPlayAlbumButton = (jukeboxContract, albumName, acceptedTokens,
 
             showLoader();
 
+            console.log("Approving token for album playback...");
             await approveToken(token, jukeboxContract.address, wholeAlbumFee);
 
-            console.log(`Playing entire album: "${albumName}"`);
+            console.log(`Initiating album playback transaction for "${albumName}"...`);
             const tx = await jukeboxContract.playAlbum(albumName, token, {
                 gasLimit: ethers.utils.hexlify(300000),
             });
@@ -197,7 +210,7 @@ export const setupPlayAlbumButton = (jukeboxContract, albumName, acceptedTokens,
             console.log("Transaction Hash:", tx.hash);
             await tx.wait();
 
-            console.log(`Album "${albumName}" is now playing. Payment successful!`);
+            console.log(`Album "${albumName}" payment successful! Starting playback...`);
 
             controlsView.classList.add("hidden");
             recordView.classList.remove("hidden");
@@ -206,18 +219,40 @@ export const setupPlayAlbumButton = (jukeboxContract, albumName, acceptedTokens,
             isPlayingAlbum = true;
             currentTrackIndex = 0;
 
-            playNextTrack(trackList, cid);
+            // Setup track ended event listener for album playback
+            const handleAlbumTrackEnd = async () => {
+                console.log(`\n=== Track ${currentTrackIndex + 1} Completed ===`);
+                currentTrackIndex++;
+                if (currentTrackIndex < trackList.length && isPlayingAlbum) {
+                    console.log(`Moving to track ${currentTrackIndex + 1} of ${trackList.length}`);
+                    await playNextTrack(trackList);
+                } else {
+                    console.log("\n=== Album Playback Complete ===");
+                    console.log(`Finished playing ${trackList.length} tracks`);
+                    isPlayingAlbum = false;
+                    currentTrackIndex = 0;
+                    document.removeEventListener('trackEnded', handleAlbumTrackEnd);
+                }
+            };
+
+            document.addEventListener('trackEnded', handleAlbumTrackEnd);
+
+            // Start playing the first track
+            console.log("\n=== Starting First Track ===");
+            await playNextTrack(trackList);
+
         } catch (error) {
-            console.error("Error playing album:", error);
+            console.error("Error during album playback:", error);
+            alert("Error playing album. Please try again.");
         } finally {
             resetTrackAndTokenSelectionModal();
             hideLoader();
         }
     });
 
-    const playNextTrack = async (trackList, cid) => {
+    const playNextTrack = async (trackList) => {
         if (!isPlayingAlbum || currentTrackIndex >= trackList.length) {
-            console.log("Album playback completed.");
+            console.log("Album playback completed or stopped");
             isPlayingAlbum = false;
             currentTrackIndex = 0;
             recordView.classList.add("hidden");
@@ -226,28 +261,48 @@ export const setupPlayAlbumButton = (jukeboxContract, albumName, acceptedTokens,
         }
 
         const trackFilename = trackList[currentTrackIndex];
-        const trackUrl = `https://${cid}.ipfs.w3s.link/${trackFilename}`;
+        console.log(`\n=== Loading Track ${currentTrackIndex + 1}/${trackList.length} ===`);
+        console.log(`Filename: ${trackFilename}`);
 
-        try {
-            customPlayer.loadTrack(trackUrl, trackFilename);
-            customPlayer.play();
-
-            // Listen for track end event
-            const handleTrackEnd = () => {
-                currentTrackIndex++;
-                document.removeEventListener('trackEnded', handleTrackEnd);
-                playNextTrack(trackList, cid);
-            };
-
-            document.addEventListener('trackEnded', handleTrackEnd);
-        } catch (error) {
-            console.error(`Error playing track ${currentTrackIndex + 1}:`, error);
-            currentTrackIndex++;
-            playNextTrack(trackList, cid);
+        // Try loading from multiple gateways
+        for (const gateway of ipfsGateways) {
+            try {
+                const trackUrl = `${gateway}/${trackFilename}`;
+                console.log(`Attempting to load from: ${gateway}`);
+                const response = await fetch(trackUrl);
+                if (response.ok) {
+                    console.log("Successfully loaded track from gateway");
+                    const blob = await response.blob();
+                    // Try to determine the content type from the filename
+                    const fileExtension = trackFilename.split('.').pop().toLowerCase();
+                    let contentType = 'audio/mpeg'; // default
+                    if (fileExtension === 'mp3') contentType = 'audio/mpeg';
+                    else if (fileExtension === 'm4a') contentType = 'audio/mp4';
+                    else if (fileExtension === 'wav') contentType = 'audio/wav';
+                    else if (fileExtension === 'ogg') contentType = 'audio/ogg';
+                    
+                    console.log(`Content type: ${contentType}`);
+                    const correctedBlob = new Blob([blob], { type: contentType });
+                    const blobUrl = URL.createObjectURL(correctedBlob);
+                    
+                    customPlayer.loadTrack(blobUrl, trackFilename);
+                    customPlayer.play();
+                    console.log("Track playback started");
+                    return; // Successfully loaded and playing
+                }
+            } catch (error) {
+                console.log(`Failed to load from gateway: ${gateway}`);
+            }
         }
+        
+        // If we get here, all gateways failed
+        console.error(`Failed to load track ${currentTrackIndex + 1} from all gateways`);
+        currentTrackIndex++;
+        playNextTrack(trackList); // Skip to next track
     };
 
     backToControlsButton.addEventListener("click", () => {
+        console.log("\n=== Playback Stopped by User ===");
         recordView.classList.add("hidden");
         controlsView.classList.remove("hidden");
         isPlayingAlbum = false;

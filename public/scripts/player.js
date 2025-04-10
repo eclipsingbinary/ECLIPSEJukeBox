@@ -6,8 +6,6 @@ class CustomPlayer {
         
         // DOM Elements
         this.playPauseBtn = document.getElementById('play-pause');
-        this.prevTrackBtn = document.getElementById('prev-track');
-        this.nextTrackBtn = document.getElementById('next-track');
         this.muteBtn = document.getElementById('mute');
         this.progressContainer = document.querySelector('.progress-container');
         this.progressBar = document.querySelector('.progress-bar');
@@ -16,6 +14,10 @@ class CustomPlayer {
         this.volumeSlider = document.querySelector('.volume-slider');
         this.volumeProgress = document.querySelector('.volume-progress');
         this.trackNameDisplay = document.querySelector('.track-name');
+        this.ownerDisplay = document.querySelector('.owner-address');
+        this.feeDisplay = document.querySelector('.fee-amount');
+        this.tokenNameDisplay = document.querySelector('.token-name');
+        this.tokenLogoDisplay = document.querySelector('.token-logo');
         
         this.setupEventListeners();
     }
@@ -37,10 +39,27 @@ class CustomPlayer {
         this.audio.addEventListener('ended', () => this.handleTrackEnd());
     }
     
-    loadTrack(trackUrl, trackName) {
+    loadTrack(trackUrl, trackName, trackDetails = {}) {
         this.currentTrack = trackUrl;
         this.audio.src = trackUrl;
         this.trackNameDisplay.textContent = trackName;
+        
+        // Update additional track details if provided
+        if (trackDetails.owner) {
+            this.ownerDisplay.textContent = `${trackDetails.owner.slice(0, 6)}...${trackDetails.owner.slice(-4)}`;
+        }
+        if (trackDetails.feePaid) {
+            this.feeDisplay.textContent = trackDetails.feePaid;
+        }
+        if (trackDetails.token) {
+            this.tokenNameDisplay.textContent = trackDetails.token.symbol || trackDetails.token;
+            if (trackDetails.token.logo) {
+                this.tokenLogoDisplay.src = trackDetails.token.logo;
+                this.tokenLogoDisplay.style.display = 'inline';
+            } else {
+                this.tokenLogoDisplay.style.display = 'none';
+            }
+        }
         this.audio.load();
     }
     
